@@ -1,0 +1,58 @@
+syntax = "proto2";
+
+enum UserType{
+	GW = 0;
+	PEER = 1;
+	CLIENT = 2;
+}
+
+enum MessageType {
+	CONNECT = 0;
+	INFO = 1;
+	ALIVE = 2;
+	OP = 3;
+}
+
+enum OperationType {
+	ADD_PHOTO = 0;
+	ADD_KW = 1;
+	DEL = 2;
+	SEARCH = 3;
+	GET_NAME = 4;
+	DOWNLOAD = 5;
+}
+
+message Peer {
+	required int32 peer_id = 1;
+	required string ip = 2;
+	required int32 port = 3;
+}
+
+message PeersList {
+	repeated Peer peer = 1;
+}
+
+message Metadata {
+	required int32 id_photo = 1;
+	required string file_name = 2;
+	repeated string keywords = 3;
+}
+
+message Content {
+	optional string ip = 1;//GW
+	optional int32 port = 2;//GW and Peer
+	optional int32 peer_id = 3;//GW and Peer
+	optional PeersList peers_list = 4;//GW
+	optional float busy_lvl = 5;//Peer
+	optional OperationType op_type = 6 [default = ADD_KW];//ALL
+	optional int32 op_result = 7;//Peer
+	optional int32 id_photo = 8;//Client
+	optional string keyword = 9;//Client
+	optional Metadata metadata = 10;//Client
+}
+
+message NetworkMessage {
+	required UserType user_type = 1 [default = GW];
+	required MessageType message_type = 2 [default = CONNECT];
+	optional Content content = 3;
+}

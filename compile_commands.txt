@@ -1,0 +1,40 @@
+client:
+sudo ldconfig
+protoc-c --c_out=. API.proto
+gcc -Wall -c client.c -c API.pb-c.c -c API.c -g
+gcc -Wall -o client client.o API.pb-c.o API.o -lprotobuf-c -g
+./client
+
+
+gateway:
+gcc -Wall -c gateway.c -c API.c -c API.pb-c.c -c gw_aux_funcs.c -lpthread -g
+gcc -Wall -o gateway gateway.o API.o API.pb-c.o gw_aux_funcs.o -lprotobuf-c -g -lpthread
+./gateway
+
+
+peer:
+gcc -Wall -c peer.c -c API.pb-c.c -c API.c -lpthread -g
+gcc -Wall -o peer peer.o API.pb-c.o API.o -lprotobuf-c -lpthread -g
+./peer
+
+
+
+
+
+outros:
+ps -auf
+ifconfig
+time ./<program>
+
+
+
+protobuf-c:
+files: definition.proto + test.c {with #include "definition.pb-c.h"}):
+commands:
+
+sudo ldconfig #para resolver problemas das bibliotecas do protobuf
+protoc-c --c_out=. definition.proto #generates definition.h + definition.c
+gcc -Wall -c definition.pb-c.c -c test.c #compiles both
+gcc -Wall -o test definition.pb-c.o test.o -lprotobuf-c #links them with lib flag
+./test
+
